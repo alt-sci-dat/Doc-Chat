@@ -1,0 +1,162 @@
+[
+    {
+        "id": 1,
+        "category": "factual",
+        "question": "What is the central bank of India called?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Straightforward fact from RBI annual report"
+    },
+    {
+        "id": 2,
+        "category": "factual",
+        "question": "Who is the governor of the Reserve Bank of India?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Common knowledge should be in the report"
+    },
+    {
+        "id": 3,
+        "category": "factual",
+        "question": "What was India's GDP growth rate for the financial year 2023-24?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Should be in economic outlook section"
+    },
+    {
+        "id": 4,
+        "category": "factual",
+        "question": "What is the repo rate as of the latest monetary policy?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Key monetary policy indicator"
+    },
+    {
+        "id": 5,
+        "category": "factual",
+        "question": "What is the inflation target range set for India?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "MPC framework details"
+    },
+    {
+        "id": 6,
+        "category": "factual",
+        "question": "What was the total income of RBI for the year 2023-24?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Financial statement figure"
+    },
+    {
+        "id": 7,
+        "category": "factual",
+        "question": "What percentage of GDP was the fiscal deficit in 2023-24?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Fiscal policy section"
+    },
+    {
+        "id": 8,
+        "category": "factual",
+        "question": "How much foreign exchange reserve did India hold as of March 2024?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "External sector statistics"
+    },
+    {
+        "id": 9,
+        "category": "comparative",
+        "question": "How did India's GDP growth compare between 2022-23 and 2023-24?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Year-over-year comparison"
+    },
+    {
+        "id": 10,
+        "category": "comparative",
+        "question": "Which sector contributed more to GDP growth — services or manufacturing?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Sectoral analysis"
+    },
+    {
+        "id": 11,
+        "category": "comparative",
+        "question": "How did rural and urban inflation compare in the latest period?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Inflation decomposition"
+    },
+    {
+        "id": 12,
+        "category": "comparative",
+        "question": "What was the trend in bank credit growth over the last two years?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Financial sector trends"
+    },
+    {
+        "id": 13,
+        "category": "refusal",
+        "question": "What is the capital of France?",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "General knowledge not in document"
+    },
+    {
+        "id": 14,
+        "category": "refusal",
+        "question": "Who won the 2024 US presidential election?",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "Not in RBI document"
+    },
+    {
+        "id": 15,
+        "category": "refusal",
+        "question": "What is the recipe for pasta?",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "Completely unrelated topic"
+    },
+    {
+        "id": 16,
+        "category": "refusal",
+        "question": "How do I train a neural network?",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "Technical topic not in docs"
+    },
+    {
+        "id": 17,
+        "category": "multi-hop",
+        "question": "Given the repo rate and inflation trends, what was the real interest rate in 2023-24?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Requires combining two data points"
+    },
+    {
+        "id": 18,
+        "category": "multi-hop",
+        "question": "How did RBI's income compare to its expenditure, and what was the surplus transferred to the government?",
+        "expected_sources": ["RBI"],
+        "expected_refusal": false,
+        "notes": "Requires combining income statement items"
+    },
+    {
+        "id": 19,
+        "category": "edge",
+        "question": "",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "Empty question — should handle gracefully"
+    },
+    {
+        "id": 20,
+        "category": "edge",
+        "question": "!@#$%^&*()",
+        "expected_sources": [],
+        "expected_refusal": true,
+        "notes": "Gibberish input — should refuse gracefully"
+    }
+]

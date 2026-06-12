@@ -1,0 +1,12 @@
+name: docchat-api
+service:
+  port: 8000
+  health:
+    path: /health
+  env:
+    - key: GROQ_API_KEY
+      secret: true
+    - key: CHROMA_PATH
+      value: /data/chroma_db
+  routes:
+    - path: /

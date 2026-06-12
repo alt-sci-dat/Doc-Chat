@@ -1,0 +1,28 @@
+services:
+  api:
+    build: .
+    container_name: docchat-api
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - chroma_data:/app/chroma_db
+      - ./app:/app/app
+    env_file:
+      - .env
+    environment:
+      - CHROMA_PATH=/app/chroma_db
+
+  ui:
+    build: .
+    container_name: docchat-ui
+    ports:
+      - "8501:8501"
+    command: streamlit run ui/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:8000
+
+volumes:
+  chroma_data:
