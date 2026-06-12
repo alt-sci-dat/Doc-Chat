@@ -46,7 +46,11 @@ def init_session():
 
 def fetch_health():
     try:
-        resp = requests.get(f"{API_URL}/health", timeout=5)
+        resp = requests.get(
+            f"{API_URL}/health",
+            params={"session_id": st.session_state.session_id},
+            timeout=5,
+        )
         if resp.ok:
             data = resp.json()
             st.session_state.indexed_docs = data.get("docs_ingested", [])
@@ -58,7 +62,12 @@ def fetch_health():
 
 def upload_pdfs(files):
     files_for_req = [("files", (f.name, f.read(), "application/pdf")) for f in files]
-    resp = requests.post(f"{API_URL}/upload", files=files_for_req, timeout=120)
+    resp = requests.post(
+        f"{API_URL}/upload",
+        files=files_for_req,
+        params={"session_id": st.session_state.session_id},
+        timeout=120,
+    )
     if resp.ok:
         data = resp.json()
         st.success(f"✅ Indexed {data['filename']}: {data['pages']} pages, {data['chunks']} chunks in {data['time_taken']}s")
@@ -106,9 +115,13 @@ with st.sidebar:
     else:
         st.caption("No documents indexed yet.")
 
-    if st.button("🗑️ Clear All Documents", type="secondary", use_container_width=True):
+    if st.button("🗑️ Clear My Documents", type="secondary", use_container_width=True):
         try:
-            requests.post(f"{API_URL}/reset", timeout=5)
+            requests.post(
+                f"{API_URL}/reset",
+                params={"session_id": st.session_state.session_id},
+                timeout=5,
+            )
             st.session_state.indexed_docs = []
             st.session_state.messages = []
             st.session_state.citations_store = {}

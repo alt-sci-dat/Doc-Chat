@@ -110,11 +110,13 @@ class RAGEngine:
         self.cache = LRUCache(capacity=50)
         self.rate_limiter = RateLimiter(min_interval=2.0)
 
-    def retrieve(self, query: str) -> list[dict]:
+    def retrieve(self, query: str, session_id: str = "") -> list[dict]:
         query_emb = self.embedder.encode(query).tolist()
+        where_filter = {"session_id": session_id} if session_id else None
         results = self.collection.query(
             query_embeddings=[query_emb],
             n_results=settings.top_k,
+            where=where_filter,
         )
         chunks = []
         for i in range(len(results["ids"][0])):
@@ -144,7 +146,7 @@ class RAGEngine:
         if session_id not in self.sessions:
             self.sessions[session_id] = []
 
-        chunks = self.retrieve(question)
+        chunks = self.retrieve(question, session_id)
 
         if not chunks:
             return ChatResponse(
@@ -187,13 +189,18 @@ class RAGEngine:
     def clear_session(self, session_id: str):
         self.sessions.pop(session_id, None)
 
-    def get_indexed_docs(self) -> list[str]:
-        all_meta = self.collection.get(limit=1000)["metadatas"]
+    def get_indexed_docs(self, session_id: str = "") -> list[str]:
+        where_filter = {"session_id": session_id} if session_id else None
+        all_meta = self.collection.get(limit=1000, where=where_filter)["metadatas"]
         filenames = sorted(set(m["filename"] for m in all_meta if m))
         return filenames
 
-    def get_chunk_count(self) -> int:
-        return self.collection.count()
+    def get_chunk_count(self, session_id: str = "") -> int:
+        where_filter = {"session_id": session_id} if session_id else None
+        return len(self.collection.get(where=where_filter, limit=10000)["ids"])
 
-    def reset_collection(self):
-        self.collection.delete(ids=self.collection.get()["ids"])
+    def reset_collection(self, session_id: str = ""):
+        where_filter = {"session_id": session_id} if session_id else None
+        ids = self.collection.get(where=where_filter)["ids"]
+        if ids:
+            self.collection.delete(ids=ids)

@@ -2,7 +2,7 @@ import os
 import tempfile
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, status
+from fastapi import FastAPI, UploadFile, File, HTTPException, status, Query
 from fastapi.middleware.cors import CORSMiddleware
 from chromadb import PersistentClient
 from sentence_transformers import SentenceTransformer
@@ -54,14 +54,17 @@ app.add_middleware(
 
 
 @app.get("/health", response_model=HealthResponse)
-async def health():
-    docs = rag_engine.get_indexed_docs() if rag_engine else []
-    count = rag_engine.get_chunk_count() if rag_engine else 0
+async def health(session_id: str = ""):
+    docs = rag_engine.get_indexed_docs(session_id) if rag_engine else []
+    count = rag_engine.get_chunk_count(session_id) if rag_engine else 0
     return HealthResponse(status="ok", chunks_indexed=count, docs_ingested=docs)
 
 
 @app.post("/upload", response_model=UploadResponse, responses={422: {"model": ErrorResponse}})
-async def upload(files: list[UploadFile] = File(...)):
+async def upload(
+    files: list[UploadFile] = File(...),
+    session_id: str = "",
+):
     if len(files) < 1 or len(files) > 5:
         raise HTTPException(status_code=422, detail="Upload between 1 and 5 PDFs")
 
@@ -79,7 +82,7 @@ async def upload(files: list[UploadFile] = File(...)):
             tmp_path = tmp.name
 
         try:
-            result = ingest_pdf(tmp_path, file.filename, collection, embedder)
+            result = ingest_pdf(tmp_path, file.filename, collection, embedder, session_id)
             results.append(result)
         except ValueError as e:
             raise HTTPException(status_code=422, detail=str(e))
@@ -108,6 +111,7 @@ async def clear(session_id: str = ""):
 
 
 @app.post("/reset")
-async def reset():
-    rag_engine.reset_collection()
-    return {"status": "ok", "message": "All documents cleared"}
+async def reset(session_id: str = ""):
+    rag_engine.reset_collection(session_id)
+    msg = f"Documents cleared for session {session_id}" if session_id else "All documents cleared"
+    return {"status": "ok", "message": msg}

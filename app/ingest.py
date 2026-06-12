@@ -27,7 +27,7 @@ def extract_text_from_pdf(path: str) -> list[dict]:
     return pages
 
 
-def chunk_page(page_text: str, page_number: int, filename: str) -> list[dict]:
+def chunk_page(page_text: str, page_number: int, filename: str, session_id: str = "") -> list[dict]:
     """Split page text into overlapping chunks of ~chunk_size tokens."""
     chunks = []
     tokens = tokenizer.encode(page_text, disallowed_special=())
@@ -42,6 +42,7 @@ def chunk_page(page_text: str, page_number: int, filename: str) -> list[dict]:
             "filename": filename,
             "page_number": page_number,
             "text": chunk_text,
+            "session_id": session_id,
         })
         chunk_id += 1
         if end >= len(tokens):
@@ -55,6 +56,7 @@ def ingest_pdf(
     filename: str,
     collection: Collection,
     embedder,
+    session_id: str = "",
 ) -> dict:
     """Full pipeline: extract → chunk → embed → upsert to ChromaDB."""
     start = time.perf_counter()
@@ -65,13 +67,13 @@ def ingest_pdf(
 
     all_chunks = []
     for page in pages:
-        page_chunks = chunk_page(page["text"], page["page_number"], filename)
+        page_chunks = chunk_page(page["text"], page["page_number"], filename, session_id)
         all_chunks.extend(page_chunks)
 
     ids = [ch["chunk_id"] for ch in all_chunks]
     texts = [ch["text"] for ch in all_chunks]
     metadatas: list[Metadata] = [
-        {"filename": ch["filename"], "page_number": ch["page_number"], "chunk_id": ch["chunk_id"]}
+        {"filename": ch["filename"], "page_number": ch["page_number"], "chunk_id": ch["chunk_id"], "session_id": ch["session_id"]}
         for ch in all_chunks
     ]
 
