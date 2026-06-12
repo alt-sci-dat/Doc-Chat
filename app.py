@@ -9,13 +9,4 @@ def run_backend():
 t = threading.Thread(target=run_backend, daemon=True)
 t.start()
 
-import streamlit.web.bootstrap
 import ui.streamlit_app
-
-if __name__ == "__main__":
-    streamlit.web.bootstrap.run(
-        "ui/streamlit_app.py",
-        False,
-        [],
-        flag_options={},
-    )
