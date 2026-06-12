@@ -1,3 +1,13 @@
+---
+title: DocChat
+emoji: 📄
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # DocChat — RAG Chatbot for Custom Documents
 
 Chat with your PDFs. Upload documents, ask questions, get cited answers — running entirely on free tiers.
